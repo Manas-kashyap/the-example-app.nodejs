@@ -1,25 +1,41 @@
 pipeline {
     agent any
-    environment { 
-        CI = 'true'
-    }
     stages {
+    	stage('Install npm') {
+            steps {
+                sh 'curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -'
+                sh 'sudo apt install nodejs'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'npm install'
+                echo "npm installed"
             }
         }
         stage('Test') {
             steps {
-                sh './jenkins/scripts/test.sh'
+                sh 'npm test'
+                echo "pata hai test  fail hoga"
             }
         }
         stage('Deliver') { 
             steps {
-                sh './jenkins/scripts/deliver.sh' 
-                input message: 'Finished using the web site? (Click "Proceed" to continue)' 
-                sh './jenkins/scripts/kill.sh' 
+            	input 'Proceed to Deploy'
+                sh 'npm run start:dev'
+                echo 'chal gaya'
             }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
+        success {
+        	echo 'Pass'
+        }
+        failure {
+        	echo 'fail'
         }
     }
 }
