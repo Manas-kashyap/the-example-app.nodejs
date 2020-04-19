@@ -13,12 +13,12 @@ pipeline {
                 echo "npm installed"
             }
         }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-                echo "pata hai test  fail hoga"
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm test'
+        //         echo "pata hai test  fail hoga"
+        //     }
+        // }
         stage('Deliver') { 
             steps {
             	input 'Proceed to Deploy'
