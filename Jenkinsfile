@@ -56,7 +56,6 @@ pipeline {
 						}
 						catch (exc) {
 							echo 'TEST FAILED !!!!'
-							throw
 						}
 					}
 				}
@@ -70,7 +69,6 @@ pipeline {
 						}
 						catch (exc) {
 							echo 'TEST FAILED !!!!'
-							throw
 						}
 						}
 					}
