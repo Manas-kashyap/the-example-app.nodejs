@@ -52,10 +52,14 @@ pipeline {
 					}
 					steps {
 						try {
-							sh 'npm test'
+							steps {
+								sh 'npm test'
+							}
 						}
 						catch (exc) {
+							steps {
 							echo 'TEST FAILED !!!!'
+						}
 						}
 					}
 				}
