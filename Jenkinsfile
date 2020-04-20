@@ -65,10 +65,14 @@ pipeline {
 					}
 					steps {
 						try {
+							steps {
 							sh 'npm test'
+							}
 						}
 						catch (exc) {
+							steps {
 							echo 'TEST FAILED !!!!'
+							}
 						}
 						}
 					}
