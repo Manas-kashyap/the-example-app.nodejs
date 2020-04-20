@@ -21,5 +21,9 @@ pipeline {
             }
         }
     }
+            stage ('deployment') {
+            steps {
+            sh 'npm install && npm run start:dev'
+            }}
 }
 }
