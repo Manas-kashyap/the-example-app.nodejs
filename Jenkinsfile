@@ -1,8 +1,8 @@
 pipeline {
     agent any 
-    parallel {
         stages {
-            stage ('Install Dependencies in ubuntu Slave') {
+            parallel {
+                stage ('Install Dependencies in ubuntu Slave') {
                 agent {
                     label "ubuntu"
                 }
@@ -20,4 +20,3 @@ pipeline {
             }
         }
     }
-}
