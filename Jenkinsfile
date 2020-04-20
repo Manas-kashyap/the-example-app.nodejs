@@ -1,41 +1,23 @@
 pipeline {
-    agent any
-    stages {
-    	stage('Install npm') {
-            steps {
-                sh 'curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -'
-                sh 'sudo apt install nodejs'
+    agent any 
+    parallel {
+        stages {
+            stage ('Install Dependencies in ubuntu Slave') {
+                agent {
+                    label "ubuntu"
+                }
+                steps {
+                    sh 'install'
+                }
             }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm install'
-                echo "npm installed"
+            stage ('Install Dependencies in debian Slave') {
+                agent {
+                    label "debian"
+                }
+                steps {
+                    sh 'install'
+                }
             }
-        }
-        // stage('Test') {
-        //     steps {
-        //         sh 'npm test'
-        //         echo "pata hai test  fail hoga"
-        //     }
-        // }
-        stage('Deliver') { 
-            steps {
-            	input 'Proceed to Deploy'
-                sh 'npm run start:dev'
-                echo 'chal gaya'
-            }
-        }
-    }
-    post { 
-        always { 
-            echo 'I will always say Hello again!'
-        }
-        success {
-        	echo 'Pass'
-        }
-        failure {
-        	echo 'fail'
         }
     }
 }
