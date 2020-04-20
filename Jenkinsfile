@@ -8,7 +8,7 @@ pipeline {
                     label "ubuntu-slave"
                 }
                 steps {
-                    sh './dependency'
+                    sh './dependency.sh'
                 }
             }
             stage ('Install Dependencies in debian Slave') {
@@ -16,7 +16,7 @@ pipeline {
                     label "debian-slave"
                 }
                 steps {
-                    sh './dependency'
+                    sh './dependency.sh'
                 }
             }
         }
