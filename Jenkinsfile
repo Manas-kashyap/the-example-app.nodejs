@@ -1,29 +1,87 @@
 pipeline {
-    agent any 
-        stages {
-            stage('Parallel Stage'){
-                parallel {
-                    stage ('Install Dependencies in ubuntu Slave') {
-                agent {
-                    label "ubuntu-slave"
-                }
-                steps {
-                    sh './dependency.sh'
-                }
-            }
-            stage ('Install Dependencies in debian Slave') {
-                agent {
-                    label "debian-slave"
-                }
-                steps {
-                    sh './dependency.sh'
-                }
-            }
-        }
-    }
-            stage ('deployment') {
-            steps {
-            sh 'npm install && npm run start:dev'
-            }}
-}
-}
+	agent any
+	stages {
+		stage ('Install npm'){
+			parallel {
+				stage ('Install npm in ubuntu-slave') {
+					agent {
+						label 'ubuntu-slave'
+					}
+					steps {
+						sh './dependency.sh'
+					}
+				}
+				stage ('Install npm in debian-slave') {
+					agent {
+						label 'debian-slave'
+					}
+					steps {
+						sh '/dependency.sh'
+					}
+				}
+			}
+		}
+		stage ('Install dependency of project') {
+			parallel {
+				stage ('Install in ubuntu') {
+					agent {
+						label 'ubuntu-slave'
+					}
+					steps {
+						sh 'npm install'
+					}
+				}
+				stage ('Install in debian') {
+					agent {
+						label 'debian-slave'
+					}
+					steps {
+						sh 'npm install'
+					}
+				}
+			}
+		}
+		stage ('Run tests for test branch') {
+			when {
+				branch 'tests/visual-regression-testing'
+			}
+			parallel {
+				stage ('TEST IN UBUNTU') {
+					agent {
+						label 'ubuntu-slave'
+					}
+					steps {
+						try {
+							sh 'npm test'
+						}
+						catch (exc) {
+							echo 'TEST FAILED !!!!'
+							throw
+						}
+					}
+				}
+				stage ('TEST IN DEBIAN') {
+					agent {
+						label 'debian-slave'
+					}
+					steps {
+						try {
+							sh 'npm test'
+						}
+						catch (exc) {
+							echo 'TEST FAILED !!!!'
+							throw
+						}
+						}
+					}
+				}
+			}
+			post {
+				always {
+					emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+				}
+			}
+		}
+	}
