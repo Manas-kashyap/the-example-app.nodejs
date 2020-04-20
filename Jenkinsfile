@@ -41,47 +41,47 @@ pipeline {
 				}
 			}
 		}
-		stage ('Run tests for test branch') {
-			when {
-				branch 'tests/visual-regression-testing'
-			}
-			parallel {
-				stage ('TEST IN UBUNTU') {
-					agent {
-						label 'ubuntu-slave'
-					}
-					steps {
-						try {
-							steps {
-								sh 'npm test'
-							}
-						}
-						catch (exc) {
-							steps {
-							echo 'TEST FAILED !!!!'
-						}
-						}
-					}
-				}
-				stage ('TEST IN DEBIAN') {
-					agent {
-						label 'debian-slave'
-					}
-					steps {
-						try {
-							steps {
-							sh 'npm test'
-							}
-						}
-						catch (exc) {
-							steps {
-							echo 'TEST FAILED !!!!'
-							}
-						}
-						}
-					}
-				}
-			}
+		// stage ('Run tests for test branch') {
+		// 	when {
+		// 		branch 'tests/visual-regression-testing'
+		// 	}
+		// 	parallel {
+		// 		stage ('TEST IN UBUNTU') {
+		// 			agent {
+		// 				label 'ubuntu-slave'
+		// 			}
+		// 			steps {
+		// 				try {
+		// 					steps {
+		// 						sh 'npm test'
+		// 					}
+		// 				}
+		// 				catch (exc) {
+		// 					steps {
+		// 					echo 'TEST FAILED !!!!'
+		// 				}
+		// 				}
+		// 			}
+		// 		}
+		// 		stage ('TEST IN DEBIAN') {
+		// 			agent {
+		// 				label 'debian-slave'
+		// 			}
+		// 			steps {
+		// 				try {
+		// 					steps {
+		// 					sh 'npm test'
+		// 					}
+		// 				}
+		// 				catch (exc) {
+		// 					steps {
+		// 					echo 'TEST FAILED !!!!'
+		// 					}
+		// 				}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
 			post {
 				always {
 					emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
