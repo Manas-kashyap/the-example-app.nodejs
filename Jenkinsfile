@@ -5,18 +5,18 @@ pipeline {
                 parallel {
                     stage ('Install Dependencies in ubuntu Slave') {
                 agent {
-                    label "ubuntu"
+                    label "ubuntu-slave"
                 }
                 steps {
-                    sh 'install'
+                    sh 'dependency'
                 }
             }
             stage ('Install Dependencies in debian Slave') {
                 agent {
-                    label "debian"
+                    label "debian-slave"
                 }
                 steps {
-                    sh 'install'
+                    sh 'dependency'
                 }
             }
         }
